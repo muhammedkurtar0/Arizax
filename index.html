@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArızaX | Akıllı Arıza Tespit</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#08111f;color:#f1f5f9;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px 18px;background:#101d31;
+ border-bottom:1px solid #263650;
+}
+.logo{font-size:28px;font-weight:bold;color:#38bdf8}
+.logo span{color:white}
+header p{color:#9fb0c8;font-size:13px}
+main{max-width:700px;margin:30px auto;padding:15px}
+.card{
+ background:#111f33;padding:23px;border-radius:18px;
+ border:1px solid #293d5b;
+}
+h1{font-size:25px;margin-top:0}
+.desc{color:#a8b8ce;line-height:1.6}
+label{display:block;margin:18px 0 8px;font-weight:bold}
+input,select{
+ width:100%;padding:15px;border-radius:10px;
+ border:1px solid #344b6b;background:#091629;
+ color:white;font-size:16px;
+}
+button{
+ width:100%;padding:16px;margin-top:22px;
+ border:0;border-radius:10px;background:#0284c7;
+ color:white;font-size:17px;font-weight:bold;
+}
+button:active{background:#0369a1}
+#result{
+ display:none;margin-top:22px;padding:18px;
+ border-radius:12px;background:#091629;
+ border:1px solid #29415f;line-height:1.7;
+}
+.small{font-size:12px;color:#8295ad;margin-top:20px}
+footer{text-align:center;color:#71839b;padding:25px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">Arıza<span>X</span></div>
+ <p>Akıllı Arıza Tespit Platformu</p>
+</header>
+
+<main>
+ <div class="card">
+  <h1>Cihazındaki arızayı bul</h1>
+  <p class="desc">
+   Cihazını seç, markanı ve hata kodunu gir.
+   ArızaX sana hata koduyla ilgili bilgi göstersin.
+  </p>
+
+  <label>Cihaz türü</label>
+  <select id="device">
+   <option>Klima</option>
+   <option>Çamaşır Makinesi</option>
+   <option>Bulaşık Makinesi</option>
+   <option>Buzdolabı</option>
+   <option>Kombi</option>
+   <option>Kurutma Makinesi</option>
+   <option>Televizyon</option>
+  </select>
+
+  <label>Marka</label>
+  <select id="brand">
+   <option>Samsung</option>
+   <option>LG</option>
+   <option>Bosch</option>
+   <option>Arçelik</option>
+   <option>Beko</option>
+   <option>Vestel</option>
+   <option>Regal</option>
+   <option>Diğer</option>
+  </select>
+
+  <label>Model (isteğe bağlı)</label>
+  <input id="model" placeholder="Örn: ABC123">
+
+  <label>Hata kodu</label>
+  <input id="error" placeholder="Örn: E01">
+
+  <button onclick="searchFault()">ARIZAYI ARAŞTIR</button>
+
+  <div id="result"></div>
+
+  <p class="small">
+   İlk sürüm: Örnek hata kodlarıyla çalışır.
+   Sonraki aşamada gerçek teknik kaynak ve yapay zekâ
+   bağlantısı ekleyeceğiz.
+  </p>
+ </div>
+</main>
+
+<footer>© 2026 ArızaX | Teknik Bilgi Platformu</footer>
+
+<script>
+function searchFault(){
+ const device=document.getElementById("device").value;
+ const brand=document.getElementById("brand").value;
+ const model=document.getElementById("model").value;
+ const error=document.getElementById("error").value.trim().toUpperCase();
+ const result=document.getElementById("result");
+
+ if(!error){
+  alert("Lütfen hata kodunu gir.");
+  return;
+ }
+
+ let message="";
+
+ if(device==="Klima" && brand==="LG" && error==="CH05"){
+  message="CH05: İç ve dış ünite arasındaki iletişimle ilgili bir hata olabilir.";
+ }
+ else if(device==="Çamaşır Makinesi" && brand==="Samsung" && error==="5E"){
+  message="5E: Su tahliye sistemiyle ilgili bir sorun olabilir.";
+ }
+ else if(device==="Bulaşık Makinesi" && brand==="Bosch" && error==="E01"){
+  message="E01: Elektronik kontrol sistemiyle ilgili bir hata olabilir.";
+ }
+ else{
+  message="Bu hata kodu henüz örnek veri tabanımızda bulunmuyor. Doğru teşhis için cihazın tam modeline ve üreticinin teknik belgelerine ihtiyaç var.";
+ }
+
+ result.style.display="block";
+ result.innerHTML=
+  "<h3>Arama sonucu</h3>"+
+  "<b>Cihaz:</b> "+device+"<br>"+
+  "<b>Marka:</b> "+brand+"<br>"+
+  "<b>Model:</b> "+(model||"Belirtilmedi")+"<br>"+
+  "<b>Hata kodu:</b> "+error+
+  "<hr><b>Bilgi:</b><br>"+message+
+  "<p style='color:#fbbf24;font-size:13px'>Bu sonuç ön bilgilendirmedir, kesin arıza teşhisi değildir. Elektrikli cihazların içini açmadan önce enerjisini kesin; tehlikeli müdahaleleri yetkili teknisyene bırakın.</p>";
+}
+</script>
+</body>
+</html>
