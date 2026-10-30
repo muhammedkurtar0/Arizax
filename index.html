@@ -4,143 +4,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ArızaX | Akıllı Arıza Tespit</title>
+<title>ArizaX - Akıllı Arıza Tespit</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#08111f;color:#f1f5f9;
- font-family:Arial,sans-serif;
-}
-header{
- padding:22px 18px;background:#101d31;
- border-bottom:1px solid #263650;
-}
-.logo{font-size:28px;font-weight:bold;color:#38bdf8}
-.logo span{color:white}
-header p{color:#9fb0c8;font-size:13px}
-main{max-width:700px;margin:30px auto;padding:15px}
-.card{
- background:#111f33;padding:23px;border-radius:18px;
- border:1px solid #293d5b;
-}
-h1{font-size:25px;margin-top:0}
-.desc{color:#a8b8ce;line-height:1.6}
-label{display:block;margin:18px 0 8px;font-weight:bold}
-input,select{
- width:100%;padding:15px;border-radius:10px;
- border:1px solid #344b6b;background:#091629;
- color:white;font-size:16px;
-}
-button{
- width:100%;padding:16px;margin-top:22px;
- border:0;border-radius:10px;background:#0284c7;
- color:white;font-size:17px;font-weight:bold;
-}
-button:active{background:#0369a1}
-#result{
- display:none;margin-top:22px;padding:18px;
- border-radius:12px;background:#091629;
- border:1px solid #29415f;line-height:1.7;
-}
-.small{font-size:12px;color:#8295ad;margin-top:20px}
-footer{text-align:center;color:#71839b;padding:25px;font-size:12px}
+body{margin:0;background:#0b1020;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px;background:#111a32;border-bottom:2px solid #00d4ff}
+h1{color:#00d4ff;font-size:40px;margin:0}
+header p{color:#bdc8dc}
+.container{max-width:650px;margin:30px auto;padding:15px}
+.panel{background:#151f38;padding:25px;border-radius:15px}
+h2{text-align:center;color:#00d4ff}
+label{display:block;margin:17px 0 7px}
+select,input{width:100%;padding:14px;border-radius:8px;border:1px solid #354563;background:#0b1020;color:white;font-size:16px}
+button{width:100%;padding:15px;margin-top:22px;border:0;border-radius:8px;background:#00c8f0;color:#06111d;font-weight:bold;font-size:16px}
+#sonuc{display:none;margin-top:22px;padding:18px;background:#0b2940;border-left:4px solid #00d4ff;border-radius:8px;line-height:1.7}
+footer{text-align:center;padding:25px;color:#8290a8;font-size:13px}
+small{color:#bdc8dc}
 </style>
 </head>
 <body>
+
 <header>
- <div class="logo">Arıza<span>X</span></div>
- <p>Akıllı Arıza Tespit Platformu</p>
+<h1>ArizaX</h1>
+<p>Akıllı Arıza Tespit Platformu</p>
 </header>
 
-<main>
- <div class="card">
-  <h1>Cihazındaki arızayı bul</h1>
-  <p class="desc">
-   Cihazını seç, markanı ve hata kodunu gir.
-   ArızaX sana hata koduyla ilgili bilgi göstersin.
-  </p>
+<div class="container">
+<div class="panel">
+<h2>Arıza Kodunu Ara</h2>
 
-  <label>Cihaz türü</label>
-  <select id="device">
-   <option>Klima</option>
-   <option>Çamaşır Makinesi</option>
-   <option>Bulaşık Makinesi</option>
-   <option>Buzdolabı</option>
-   <option>Kombi</option>
-   <option>Kurutma Makinesi</option>
-   <option>Televizyon</option>
-  </select>
+<label for="cihaz">Cihaz türü</label>
+<select id="cihaz">
+<option>Klima</option>
+<option>Çamaşır Makinesi</option>
+<option>Bulaşık Makinesi</option>
+<option>Buzdolabı</option>
+<option>Kombi</option>
+<option>Televizyon</option>
+<option>Fırın</option>
+<option>Kurutma Makinesi</option>
+</select>
 
-  <label>Marka</label>
-  <select id="brand">
-   <option>Samsung</option>
-   <option>LG</option>
-   <option>Bosch</option>
-   <option>Arçelik</option>
-   <option>Beko</option>
-   <option>Vestel</option>
-   <option>Regal</option>
-   <option>Diğer</option>
-  </select>
+<label for="marka">Marka</label>
+<select id="marka">
+<option>Vestel</option>
+<option>Arçelik</option>
+<option>Beko</option>
+<option>Samsung</option>
+<option>Bosch</option>
+<option>LG</option>
+<option>Siemens</option>
+<option>Daikin</option>
+<option>Mitsubishi</option>
+</select>
 
-  <label>Model (isteğe bağlı)</label>
-  <input id="model" placeholder="Örn: ABC123">
+<label for="model">Model numarası</label>
+<input id="model" placeholder="Cihaz modelini yaz">
 
-  <label>Hata kodu</label>
-  <input id="error" placeholder="Örn: E01">
+<label for="kod">Arıza kodu</label>
+<input id="kod" placeholder="Örn. E18">
 
-  <button onclick="searchFault()">ARIZAYI ARAŞTIR</button>
+<button onclick="arizaAra()">ARIZAYI ARAŞTIR</button>
 
-  <div id="result"></div>
+<div id="sonuc"></div>
 
-  <p class="small">
-   İlk sürüm: Örnek hata kodlarıyla çalışır.
-   Sonraki aşamada gerçek teknik kaynak ve yapay zekâ
-   bağlantısı ekleyeceğiz.
-  </p>
- </div>
-</main>
+<p><small>Arıza kodları modele göre değişebilir. Kesin teşhis için üretici kılavuzunu kontrol edin. Elektrik ve gaz tesisatına müdahale etmeyin.</small></p>
+</div>
+</div>
 
-<footer>© 2026 ArızaX | Teknik Bilgi Platformu</footer>
+<footer>© 2026 ArizaX - Akıllı Arıza Tespit Platformu</footer>
 
 <script>
-function searchFault(){
- const device=document.getElementById("device").value;
- const brand=document.getElementById("brand").value;
- const model=document.getElementById("model").value;
- const error=document.getElementById("error").value.trim().toUpperCase();
- const result=document.getElementById("result");
+const arizalar = [
+{cihaz:"Çamaşır Makinesi",marka:"Samsung",kod:"4C",aciklama:"Bazı modellerde su besleme hatasıdır. Su musluğunu ve giriş hortumunu kontrol edin."},
+{cihaz:"Çamaşır Makinesi",marka:"Samsung",kod:"5C",aciklama:"Bazı modellerde su tahliye hatasıdır."},
+{cihaz:"Çamaşır Makinesi",marka:"LG",kod:"OE",aciklama:"Bazı modellerde su tahliye sorunudur."},
+{cihaz:"Çamaşır Makinesi",marka:"LG",kod:"UE",aciklama:"Bazı modellerde çamaşır yükü dengesizdir."},
+{cihaz:"Çamaşır Makinesi",marka:"Bosch",kod:"E18",aciklama:"Bazı modellerde su tahliye sorunudur."},
+{cihaz:"Çamaşır Makinesi",marka:"Bosch",kod:"E23",aciklama:"Bazı modellerde su koruma sistemiyle ilgili hatadır."},
+{cihaz:"Bulaşık Makinesi",marka:"Bosch",kod:"E15",aciklama:"Bazı modellerde su koruma sistemi devreye girmiştir. Cihazı kapatıp servis çağırın."},
+{cihaz:"Bulaşık Makinesi",marka:"Bosch",kod:"E24",aciklama:"Bazı modellerde su tahliye sorunudur."},
+{cihaz:"Bulaşık Makinesi",marka:"Siemens",kod:"E15",aciklama:"Bazı modellerde su koruma uyarısıdır."},
+{cihaz:"Klima",marka:"Daikin",kod:"U4",aciklama:"Bazı modellerde iç ve dış ünite iletişim hatasıdır."},
+{cihaz:"Klima",marka:"LG",kod:"CH05",aciklama:"Bazı modellerde iç ve dış ünite iletişim hatasıdır."},
+{cihaz:"Klima",marka:"Mitsubishi",kod:"E6",aciklama:"Bazı modellerde iç ünite ve dış ünite iletişim hatasıdır."},
+{cihaz:"Klima",marka:"Vestel",kod:"E06",aciklama:"Bu kodun anlamı modele göre değişebilir. Model kılavuzundan doğrulayın."},
+{cihaz:"Buzdolabı",marka:"Samsung",kod:"5E",aciklama:"Bazı modellerde buz çözme sistemiyle ilgili hata olabilir."},
+{cihaz:"Buzdolabı",marka:"Samsung",kod:"22E",aciklama:"Bazı modellerde fan sistemiyle ilgili hata olabilir."}
+];
 
- if(!error){
-  alert("Lütfen hata kodunu gir.");
+function arizaAra(){
+ const cihaz=document.getElementById("cihaz").value;
+ const marka=document.getElementById("marka").value;
+ const model=document.getElementById("model").value.trim();
+ const kod=document.getElementById("kod").value.trim().toUpperCase();
+ const sonuc=document.getElementById("sonuc");
+
+ sonuc.style.display="block";
+
+ if(!kod){
+  sonuc.innerHTML="Lütfen arıza kodunu yaz.";
   return;
  }
 
- let message="";
+ const kayit=arizalar.find(a=>
+  a.cihaz===cihaz &&
+  a.marka===marka &&
+  a.kod.toUpperCase()===kod
+ );
 
- if(device==="Klima" && brand==="LG" && error==="CH05"){
-  message="CH05: İç ve dış ünite arasındaki iletişimle ilgili bir hata olabilir.";
+ if(kayit){
+  sonuc.innerHTML=`
+  <h3>Arıza kaydı bulundu!</h3>
+  <b>Cihaz:</b> ${cihaz}<br>
+  <b>Marka:</b> ${marka}<br>
+  <b>Model:</b> ${model || "Belirtilmedi"}<br>
+  <b>Arıza kodu:</b> ${kod}<br><br>
+  <b>Açıklama:</b><br>${kayit.aciklama}
+  <p><small>Bu açıklama bazı modeller için geçerlidir. Kesin bilgi için cihaz kılavuzunu kontrol edin.</small></p>`;
+ }else{
+  sonuc.innerHTML=`
+  <h3>Bu kod henüz kayıtlı değil.</h3>
+  <b>Cihaz:</b> ${cihaz}<br>
+  <b>Marka:</b> ${marka}<br>
+  <b>Model:</b> ${model || "Belirtilmedi"}<br>
+  <b>Kod:</b> ${kod}<br><br>
+  Bu kod veri tabanımızda bulunamadı. Modelin kullanım kılavuzunu veya yetkili servisi kontrol edin.`;
  }
- else if(device==="Çamaşır Makinesi" && brand==="Samsung" && error==="5E"){
-  message="5E: Su tahliye sistemiyle ilgili bir sorun olabilir.";
- }
- else if(device==="Bulaşık Makinesi" && brand==="Bosch" && error==="E01"){
-  message="E01: Elektronik kontrol sistemiyle ilgili bir hata olabilir.";
- }
- else{
-  message="Bu hata kodu henüz örnek veri tabanımızda bulunmuyor. Doğru teşhis için cihazın tam modeline ve üreticinin teknik belgelerine ihtiyaç var.";
- }
-
- result.style.display="block";
- result.innerHTML=
-  "<h3>Arama sonucu</h3>"+
-  "<b>Cihaz:</b> "+device+"<br>"+
-  "<b>Marka:</b> "+brand+"<br>"+
-  "<b>Model:</b> "+(model||"Belirtilmedi")+"<br>"+
-  "<b>Hata kodu:</b> "+error+
-  "<hr><b>Bilgi:</b><br>"+message+
-  "<p style='color:#fbbf24;font-size:13px'>Bu sonuç ön bilgilendirmedir, kesin arıza teşhisi değildir. Elektrikli cihazların içini açmadan önce enerjisini kesin; tehlikeli müdahaleleri yetkili teknisyene bırakın.</p>";
 }
 </script>
+
 </body>
 </html>
