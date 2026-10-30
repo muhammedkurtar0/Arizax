@@ -1,40 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ArizaX - Akıllı Arıza Bulucu</title>
-
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;padding:20px;
-  background:#071426;color:white;
-  font-family:Arial,sans-serif
-}
-.container{max-width:750px;margin:auto}
-header{text-align:center;padding:25px 5px}
+body{margin:0;padding:18px;background:#071426;color:white;font-family:Arial,sans-serif}
+.container{max-width:780px;margin:auto}
+header{text-align:center;padding:20px 5px}
 .logo{font-size:40px;color:#35aaff;font-weight:bold}
 header p{color:#a9bfd5}
-.panel,.result{
-  background:#10243c;
-  padding:20px;border-radius:14px;
-  border:1px solid #294968;margin-top:15px
-}
+.panel,.result{background:#10243c;padding:20px;border-radius:14px;border:1px solid #294968;margin-top:15px}
 label{display:block;margin:15px 0 8px;color:#c5d8eb}
-input,select{
-  width:100%;padding:14px;
-  border-radius:9px;border:1px solid #34536e;
-  background:#071a30;color:white;font-size:16px
-}
-button{
-  width:100%;padding:15px;margin-top:18px;
-  border:0;border-radius:9px;
-  background:#1689e8;color:white;
-  font-size:17px;font-weight:bold
-}
+input,select{width:100%;padding:14px;border-radius:9px;border:1px solid #34536e;background:#071a30;color:white;font-size:16px}
+button{width:100%;padding:15px;margin-top:18px;border:0;border-radius:9px;background:#1689e8;color:white;font-size:17px;font-weight:bold}
 #durum{font-size:14px;color:#62d6a2}
-#sonuc{margin-top:20px}
 .result h3{color:#42b5ff}
 .small{font-size:13px;color:#9db5ca}
 .error{color:#ff9999}
@@ -42,47 +24,26 @@ a{color:#56baff}
 footer{text-align:center;color:#8198ad;font-size:12px;margin:30px 0}
 </style>
 </head>
-
 <body>
 <div class="container">
-
 <header>
-  <div class="logo">🔧 ArizaX</div>
-  <h2>Akıllı Arıza Bulucu</h2>
-  <p>Arıza kodunu bul, açıklamasını ve çözümünü öğren.</p>
-  <p id="durum">Veri tabanı yükleniyor...</p>
+<div class="logo">🔧 ArizaX</div>
+<h2>Akıllı Arıza Bulucu</h2>
+<p>Arıza kodunu bul, açıklamasını ve çözümünü öğren.</p>
+<p id="durum">Veri tabanı yükleniyor...</p>
 </header>
 
 <div class="panel">
-
 <label>Cihaz türü</label>
 <select id="cihaz">
 <option value="">Tüm cihazlar</option>
-<option value="washer">Çamaşır makinesi</option>
-<option value="dishwasher">Bulaşık makinesi</option>
-<option value="refrigerator">Buzdolabı</option>
-<option value="dryer">Kurutma makinesi</option>
-<option value="oven">Fırın</option>
 </select>
 
 <label>Marka</label>
 <select id="marka">
 <option value="">Tüm markalar</option>
-<option>Beko</option>
+<option>Vestel</option>
 <option>Arçelik</option>
-<option>Bosch</option>
-<option>Samsung</option>
-<option>LG</option>
-<option>Siemens</option>
-<option>Miele</option>
-<option>Candy</option>
-<option>Hoover</option>
-<option>Whirlpool</option>
-<option>Maytag</option>
-<option>GE</option>
-<option>Frigidaire</option>
-<option>Hotpoint</option>
-<option>Indesit</option>
 </select>
 
 <label>Arıza kodu</label>
@@ -94,179 +55,166 @@ footer{text-align:center;color:#8198ad;font-size:12px;margin:30px 0}
 <div id="sonuc"></div>
 
 <footer>
-ArizaX © 2026
-<br><br>
+ArizaX © 2026<br><br>
 Veri kaynağı:
 <a href="https://github.com/ApplianceDB/ApplianceDB-public" target="_blank">ApplianceDB</a>
-<br>
-Bilgiler genel bilgilendirme amaçlıdır.
-Elektrik ve gaz sistemlerine uzman olmayan kişiler müdahale etmemelidir.
+<br>Bilgiler genel bilgilendirme amaçlıdır.
 </footer>
 </div>
 
 <script>
-const VERI_URL =
-"https://cdn.jsdelivr.net/gh/ApplianceDB/ApplianceDB-public@main/error_codes_fixes_joined.csv";
-
-let arizalar = [];
+const VERI_URL="https://cdn.jsdelivr.net/gh/ApplianceDB/ApplianceDB-public@main/error_codes_fixes_joined.csv";
+let arizalar=[];
 
 function guvenli(v){
- return String(v || "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
- })[c]);
-}
-
-function csvOku(metin){
- const satirlar=[];
- let satir=[], hucre="", tirnak=false;
-
- for(let i=0;i<metin.length;i++){
-  const c=metin[i];
-
-  if(c === '"'){
-   if(tirnak && metin[i+1] === '"'){
-    hucre+='"';i++;
-   }else{
-    tirnak=!tirnak;
-   }
-  }else if(c === "," && !tirnak){
-   satir.push(hucre);hucre="";
-  }else if((c === "\n" || c === "\r") && !tirnak){
-   if(c === "\r" && metin[i+1] === "\n")i++;
-   satir.push(hucre);
-   if(satir.some(x=>x.trim()!==""))satirlar.push(satir);
-   satir=[];hucre="";
-  }else{
-   hucre+=c;
-  }
- }
-
- satir.push(hucre);
- if(satir.some(x=>x.trim()!==""))satirlar.push(satir);
-
- if(!satirlar.length)return [];
-
- const basliklar=satirlar.shift().map(x=>x.trim());
-
- return satirlar.map(s=>{
-  const kayit={};
-  basliklar.forEach((b,i)=>kayit[b]=(s[i]||"").trim());
-  return kayit;
- });
-}
-
-async function verileriYukle(){
- const durum=document.getElementById("durum");
-
- try{
-  const cevap=await fetch(VERI_URL,{cache:"no-store"});
-
-  if(!cevap.ok){
-   throw new Error("Sunucu hatası: HTTP "+cevap.status);
-  }
-
-  const metin=await cevap.text();
-
-  if(!metin.includes("appliance_type") ||
-     !metin.includes("brand")){
-   throw new Error("Veri dosyasının biçimi beklenenden farklı.");
-  }
-
-  arizalar=csvOku(metin);
-
-  if(arizalar.length===0){
-   throw new Error("Veri dosyası boş geldi.");
-  }
-
-  durum.textContent="✅ "+arizalar.length+
-  " kayıt yüklendi. Aramaya başlayabilirsin.";
-
- }catch(hata){
-  durum.innerHTML='<span class="error">❌ Yükleme hatası: '+
-  guvenli(hata.message)+'</span>';
- }
+return String(v||"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+})[c]);
 }
 
 function norm(v){
- return String(v||"").toLowerCase().trim()
- .replaceAll("ı","i");
+return String(v||"").toLowerCase().trim()
+.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+.replaceAll("ı","i");
+}
+
+function csvOku(metin){
+const satirlar=[];
+let satir=[],hucre="",tirnak=false;
+for(let i=0;i<metin.length;i++){
+const c=metin[i];
+if(c==='"'){
+if(tirnak&&metin[i+1]==='"'){hucre+='"';i++;}
+else tirnak=!tirnak;
+}else if(c===","&&!tirnak){
+satir.push(hucre);hucre="";
+}else if((c==="\n"||c==="\r")&&!tirnak){
+if(c==="\r"&&metin[i+1]==="\n")i++;
+satir.push(hucre);
+if(satir.some(x=>x.trim()!==""))satirlar.push(satir);
+satir=[];hucre="";
+}else hucre+=c;
+}
+satir.push(hucre);
+if(satir.some(x=>x.trim()!==""))satirlar.push(satir);
+if(!satirlar.length)return [];
+const basliklar=satirlar.shift().map(x=>x.trim().replace(/^\uFEFF/,""));
+return satirlar.map(s=>{
+const kayit={};
+basliklar.forEach((b,i)=>kayit[b]=(s[i]||"").trim());
+return kayit;
+});
+}
+
+const cihazAdlari={
+washer:"Çamaşır makinesi",
+dishwasher:"Bulaşık makinesi",
+dryer:"Kurutma makinesi",
+refrigerator:"Buzdolabı",
+oven:"Fırın"
+};
+
+const ceviri={
+"The machine is not detecting the door as closed and locked.":"Makine kapının kapalı ve kilitli olduğunu algılamıyor.",
+"Check the door and reset":"Kapıyı kontrol et ve makineyi sıfırla",
+"Replace the door lock":"Kapı kilidini kontrol ettir",
+"Easy":"Kolay",
+"Medium":"Orta",
+"Hard":"Zor",
+"washer":"Çamaşır makinesi",
+"dishwasher":"Bulaşık makinesi",
+"dryer":"Kurutma makinesi",
+"refrigerator":"Buzdolabı",
+"oven":"Fırın"
+};
+
+function tr(v){
+return ceviri[v]||v||"Bu bilgi veri tabanında bulunmuyor.";
+}
+
+async function yukle(){
+const durum=document.getElementById("durum");
+try{
+const cevap=await fetch(VERI_URL,{cache:"no-store"});
+if(!cevap.ok)throw new Error("Veri sunucusuna ulaşılamadı.");
+const metin=await cevap.text();
+arizalar=csvOku(metin);
+if(!arizalar.length)throw new Error("Veri dosyası boş.");
+markalariDoldur();
+cihazlariDoldur();
+durum.textContent="✅ "+arizalar.length+" veri kaydı yüklendi.";
+}catch(e){
+durum.innerHTML='<span class="error">Yükleme hatası: '+guvenli(e.message)+'</span>';
+}
+}
+
+function markalariDoldur(){
+const sec=document.getElementById("marka");
+const mevcut=[...sec.options].map(o=>norm(o.value));
+const markalar=[...new Set(arizalar.map(v=>v.brand).filter(Boolean))].sort();
+markalar.forEach(m=>{
+if(!mevcut.includes(norm(m))){
+const op=document.createElement("option");
+op.value=m;op.textContent=m;sec.appendChild(op);
+}
+});
+}
+
+function cihazlariDoldur(){
+const sec=document.getElementById("cihaz");
+const tipler=[...new Set(arizalar.map(v=>v.appliance_type).filter(Boolean))].sort();
+tipler.forEach(t=>{
+const op=document.createElement("option");
+op.value=t;
+op.textContent=tr(t);
+sec.appendChild(op);
+});
 }
 
 function ara(){
- const kod=norm(document.getElementById("kod").value);
- const marka=norm(document.getElementById("marka").value);
- const cihaz=document.getElementById("cihaz").value;
- const sonuc=document.getElementById("sonuc");
-
- sonuc.innerHTML="";
-
- if(!kod){
-  sonuc.innerHTML='<div class="result">Arıza kodunu yazmalısın.</div>';
-  return;
- }
-
- if(!arizalar.length){
-  sonuc.innerHTML='<div class="result error">Veri tabanı henüz yüklenmedi.</div>';
-  return;
- }
-
- const bulunan=arizalar.filter(v=>{
-  const kodTam=norm(v.code)===kod;
-  const markaTam=!marka || norm(v.brand)===marka;
-  const cihazTam=!cihaz || norm(v.appliance_type)===cihaz;
-
-  return kodTam && markaTam && cihazTam;
- });
-
- if(!bulunan.length){
-  sonuc.innerHTML=
-  '<div class="result"><h3>Arıza bulunamadı</h3>'+
-  '<p>Bu marka, cihaz ve kod eşleşmesi veri tabanımızda yok.</p>'+
-  '<p>Modelini ve arıza kodunu kontrol et.</p></div>';
-  return;
- }
-
- sonuc.innerHTML="<h3>Bulunan sonuç: "+bulunan.length+"</h3>";
-
- bulunan.forEach(v=>{
-  let html='<div class="result">';
-  html+='<h3>'+guvenli(v.brand)+' - '+guvenli(v.code)+'</h3>';
-  html+='<p><b>Cihaz:</b> '+guvenli(v.appliance_type)+'</p>';
-  html+='<p><b>Açıklama:</b> '+guvenli(v.meaning)+'</p>';
-
-  if(v.component)
-   html+='<p><b>İlgili parça:</b> '+guvenli(v.component)+'</p>';
-
-  if(v.title)
-   html+='<p><b>Çözüm:</b> '+guvenli(v.title)+'</p>';
-
-  if(v.steps)
-   html+='<p><b>Çözüm adımları:</b><br>'+
-   guvenli(v.steps).replace(/\n/g,"<br>")+'</p>';
-  else
-   html+='<p class="small">Bu kayıt için çözüm adımı bulunmuyor.</p>';
-
-  if(v.diy_difficulty)
-   html+='<p><b>Zorluk:</b> '+guvenli(v.diy_difficulty)+'</p>';
-
-  if(v.source_url)
-   html+='<p><a target="_blank" href="'+
-   guvenli(v.source_url)+'">Kaynağı görüntüle</a></p>';
-
-  html+='</div>';
-  sonuc.innerHTML+=html;
- });
+const kod=norm(document.getElementById("kod").value);
+const marka=norm(document.getElementById("marka").value);
+const cihaz=document.getElementById("cihaz").value;
+const sonuc=document.getElementById("sonuc");
+sonuc.innerHTML="";
+if(!kod){
+sonuc.innerHTML='<div class="result">Lütfen arıza kodunu yaz.</div>';
+return;
+}
+if(!arizalar.length){
+sonuc.innerHTML='<div class="result error">Veri tabanı yüklenmedi.</div>';
+return;
+}
+const bulunan=arizalar.filter(v=>
+norm(v.code)===kod&&
+(!marka||norm(v.brand)===marka)&&
+(!cihaz||norm(v.appliance_type)===norm(cihaz))
+);
+if(!bulunan.length){
+sonuc.innerHTML='<div class="result"><h3>Arıza bulunamadı</h3><p>Bu marka, cihaz ve kod eşleşmesi veri tabanında bulunmuyor.</p><p>Model numarasını ve arıza kodunu kontrol et.</p></div>';
+return;
+}
+sonuc.innerHTML="<h3>Bulunan sonuç: "+bulunan.length+"</h3>";
+bulunan.forEach(v=>{
+let html='<div class="result">';
+html+='<h3>'+guvenli(v.brand)+' - '+guvenli(v.code)+'</h3>';
+html+='<p><b>Cihaz:</b> '+guvenli(tr(v.appliance_type))+'</p>';
+html+='<p><b>Açıklama:</b> '+guvenli(tr(v.meaning))+'</p>';
+if(v.component)html+='<p><b>İlgili parça:</b> '+guvenli(tr(v.component))+'</p>';
+if(v.title)html+='<p><b>Çözüm:</b> '+guvenli(tr(v.title))+'</p>';
+if(v.steps)html+='<p><b>Çözüm adımları:</b><br>'+guvenli(tr(v.steps)).replace(/\n/g,"<br>")+'</p>';
+else html+='<p class="small">Bu arıza için doğrulanmış çözüm adımı bulunmuyor.</p>';
+if(v.diy_difficulty)html+='<p><b>Zorluk:</b> '+guvenli(tr(v.diy_difficulty))+'</p>';
+if(v.source_url)html+='<p><a target="_blank" rel="noopener" href="'+guvenli(v.source_url)+'">Kaynağı görüntüle</a></p>';
+html+='<p class="small">Not: Kodlar cihaz modeline ve ülkeye göre değişebilir.</p></div>';
+sonuc.innerHTML+=html;
+});
 }
 
 document.getElementById("kod").addEventListener("keydown",e=>{
- if(e.key==="Enter")ara();
+if(e.key==="Enter")ara();
 });
-
-verileriYukle();
+yukle();
 </script>
 </body>
 </html>
