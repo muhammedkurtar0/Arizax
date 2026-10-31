@@ -3,144 +3,351 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ArızaX | Akıllı Arıza Tespit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>ArizaX | Türkçe Arıza Bulucu</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#08111f;color:#f1f5f9;
- font-family:Arial,sans-serif;
-}
-header{
- padding:22px 18px;background:#101d31;
- border-bottom:1px solid #263650;
-}
-.logo{font-size:28px;font-weight:bold;color:#38bdf8}
-.logo span{color:white}
-header p{color:#9fb0c8;font-size:13px}
-main{max-width:700px;margin:30px auto;padding:15px}
-.card{
- background:#111f33;padding:23px;border-radius:18px;
- border:1px solid #293d5b;
-}
-h1{font-size:25px;margin-top:0}
-.desc{color:#a8b8ce;line-height:1.6}
-label{display:block;margin:18px 0 8px;font-weight:bold}
-input,select{
- width:100%;padding:15px;border-radius:10px;
- border:1px solid #344b6b;background:#091629;
- color:white;font-size:16px;
-}
-button{
- width:100%;padding:16px;margin-top:22px;
- border:0;border-radius:10px;background:#0284c7;
- color:white;font-size:17px;font-weight:bold;
-}
-button:active{background:#0369a1}
-#result{
- display:none;margin-top:22px;padding:18px;
- border-radius:12px;background:#091629;
- border:1px solid #29415f;line-height:1.7;
-}
-.small{font-size:12px;color:#8295ad;margin-top:20px}
-footer{text-align:center;color:#71839b;padding:25px;font-size:12px}
+body{margin:0;padding:18px;background:#071426;color:#fff;font-family:Arial,sans-serif}
+.container{max-width:780px;margin:auto}
+header{text-align:center;padding:20px 5px}
+.logo{font-size:42px;color:#35aaff;font-weight:bold}
+header p{color:#a9bfd5}
+.panel,.result{background:#10243c;padding:20px;border-radius:14px;border:1px solid #294968;margin-top:15px}
+label{display:block;margin:15px 0 8px;color:#c5d8eb}
+input,select{width:100%;padding:14px;border-radius:9px;border:1px solid #34536e;background:#071a30;color:white;font-size:16px}
+button{width:100%;padding:15px;margin-top:18px;border:0;border-radius:9px;background:#1689e8;color:white;font-size:17px;font-weight:bold;cursor:pointer}
+button:hover{background:#0874ca}
+#durum{font-size:14px;color:#62d6a2}
+.result h3{color:#42b5ff}
+.small{font-size:13px;color:#9db5ca;line-height:1.5}
+.error{color:#ff9999!important}
+a{color:#56baff}
+footer{text-align:center;color:#8198ad;font-size:12px;margin:30px 0;line-height:1.7}
+.badge{display:inline-block;background:#173e60;padding:5px 9px;border-radius:7px;color:#8bd0ff;font-size:12px}
 </style>
 </head>
 <body>
+<div class="container">
 <header>
- <div class="logo">Arıza<span>X</span></div>
- <p>Akıllı Arıza Tespit Platformu</p>
+<div class="logo">🔧 ArizaX</div>
+<h2>Türkçe Akıllı Arıza Bulucu</h2>
+<p>Marka, cihaz, model, arıza kodu veya arıza açıklamasıyla ara.</p>
+<p id="durum">Arıza veri tabanı yükleniyor...</p>
 </header>
 
-<main>
- <div class="card">
-  <h1>Cihazındaki arızayı bul</h1>
-  <p class="desc">
-   Cihazını seç, markanı ve hata kodunu gir.
-   ArızaX sana hata koduyla ilgili bilgi göstersin.
-  </p>
+<div class="panel">
+<label for="cihaz">Cihaz türü</label>
+<select id="cihaz">
+<option value="">Tüm cihazlar</option>
+</select>
 
-  <label>Cihaz türü</label>
-  <select id="device">
-   <option>Klima</option>
-   <option>Çamaşır Makinesi</option>
-   <option>Bulaşık Makinesi</option>
-   <option>Buzdolabı</option>
-   <option>Kombi</option>
-   <option>Kurutma Makinesi</option>
-   <option>Televizyon</option>
-  </select>
+<label for="marka">Marka</label>
+<select id="marka">
+<option value="">Tüm markalar</option>
+</select>
 
-  <label>Marka</label>
-  <select id="brand">
-   <option>Samsung</option>
-   <option>LG</option>
-   <option>Bosch</option>
-   <option>Arçelik</option>
-   <option>Beko</option>
-   <option>Vestel</option>
-   <option>Regal</option>
-   <option>Diğer</option>
-  </select>
+<label for="model">Model numarası</label>
+<input id="model" placeholder="Örnek: CMI 90102" autocomplete="off">
+<p class="small">Model numarası cihaz etiketinde yazar. Model eşleşmesi bulunamazsa sonuçlar modeline özel doğrulanmış sayılmaz.</p>
 
-  <label>Model (isteğe bağlı)</label>
-  <input id="model" placeholder="Örn: ABC123">
+<label for="kod">Arıza kodu veya açıklama</label>
+<input id="kod" placeholder="Örnek: E01 veya kapı kilidi veya su boşaltma" autocomplete="off">
 
-  <label>Hata kodu</label>
-  <input id="error" placeholder="Örn: E01">
+<button id="araBtn" type="button">🔍 ARIZAYI BUL</button>
+<button id="temizleBtn" type="button" style="background:#294968">🧹 TEMİZLE</button>
+</div>
 
-  <button onclick="searchFault()">ARIZAYI ARAŞTIR</button>
+<div id="sonuc" aria-live="polite"></div>
 
-  <div id="result"></div>
-
-  <p class="small">
-   İlk sürüm: Örnek hata kodlarıyla çalışır.
-   Sonraki aşamada gerçek teknik kaynak ve yapay zekâ
-   bağlantısı ekleyeceğiz.
-  </p>
- </div>
-</main>
-
-<footer>© 2026 ArızaX | Teknik Bilgi Platformu</footer>
+<footer>
+ArizaX © 2026<br>
+<a href="https://github.com/ApplianceDB/ApplianceDB-public" target="_blank" rel="noopener">Çevrim içi açık arıza veri kaynağı</a><br>
+Arıza kodları model ve seriye göre değişebilir. Kesin işlem için cihazın kendi kullanım kılavuzunu kontrol et.
+</footer>
+</div>
 
 <script>
-function searchFault(){
- const device=document.getElementById("device").value;
- const brand=document.getElementById("brand").value;
- const model=document.getElementById("model").value;
- const error=document.getElementById("error").value.trim().toUpperCase();
- const result=document.getElementById("result");
+"use strict";
 
- if(!error){
-  alert("Lütfen hata kodunu gir.");
-  return;
- }
+const VERI_URL="https://cdn.jsdelivr.net/gh/ApplianceDB/ApplianceDB-public@main/error_codes_fixes_joined.csv";
 
- let message="";
+const MARKALAR=[
+"Vestel","Samsung","Arçelik","Beko","LG","Bosch","Siemens",
+"Profilo","Regal","Altus","Grundig","Electrolux","AEG",
+"Whirlpool","Indesit","Hotpoint","Miele","Hoover","Candy",
+"Daikin","Mitsubishi","Gree","Airfel","Demirdöküm","Vaillant",
+"Baymak","E.C.A.","Buderus","Ariston","Ferroli","Toshiba",
+"Panasonic","Sharp","Hisense","Haier","Electrolux","Franke"
+];
 
- if(device==="Klima" && brand==="LG" && error==="CH05"){
-  message="CH05: İç ve dış ünite arasındaki iletişimle ilgili bir hata olabilir.";
- }
- else if(device==="Çamaşır Makinesi" && brand==="Samsung" && error==="5E"){
-  message="5E: Su tahliye sistemiyle ilgili bir sorun olabilir.";
- }
- else if(device==="Bulaşık Makinesi" && brand==="Bosch" && error==="E01"){
-  message="E01: Elektronik kontrol sistemiyle ilgili bir hata olabilir.";
- }
- else{
-  message="Bu hata kodu henüz örnek veri tabanımızda bulunmuyor. Doğru teşhis için cihazın tam modeline ve üreticinin teknik belgelerine ihtiyaç var.";
- }
+const CIHAZLAR={
+washer:"Çamaşır makinesi",
+washing_machine:"Çamaşır makinesi",
+dishwasher:"Bulaşık makinesi",
+dryer:"Kurutma makinesi",
+tumble_dryer:"Kurutma makinesi",
+refrigerator:"Buzdolabı",
+fridge:"Buzdolabı",
+freezer:"Derin dondurucu",
+oven:"Fırın",
+range:"Ocak / fırın",
+stove:"Ocak",
+air_conditioner:"Klima",
+airconditioner:"Klima",
+television:"Televizyon",
+tv:"Televizyon",
+boiler:"Kombi / kazan",
+water_heater:"Su ısıtıcı",
+heat_pump:"Isı pompası",
+microwave:"Mikrodalga fırın",
+vacuum_cleaner:"Elektrikli süpürge"
+};
 
- result.style.display="block";
- result.innerHTML=
-  "<h3>Arama sonucu</h3>"+
-  "<b>Cihaz:</b> "+device+"<br>"+
-  "<b>Marka:</b> "+brand+"<br>"+
-  "<b>Model:</b> "+(model||"Belirtilmedi")+"<br>"+
-  "<b>Hata kodu:</b> "+error+
-  "<hr><b>Bilgi:</b><br>"+message+
-  "<p style='color:#fbbf24;font-size:13px'>Bu sonuç ön bilgilendirmedir, kesin arıza teşhisi değildir. Elektrikli cihazların içini açmadan önce enerjisini kesin; tehlikeli müdahaleleri yetkili teknisyene bırakın.</p>";
+const vestelKayitlari=[
+{brand:"Vestel",appliance_type:"washer",code:"E01",meaning:"Çamaşır makinesinin kapısı açık kalmış veya kapalı algılanmıyor.",steps:"Kapının tam kapandığını ve araya çamaşır sıkışmadığını kontrol et. Hata sürerse yetkili servise başvur.",model:"Kılavuz kapsamındaki modeller",source_url:"https://statik.vestel.com.tr/webfiles/20263190_k.pdf"},
+{brand:"Vestel",appliance_type:"washer",code:"E02",meaning:"Su basıncı veya kazan su seviyesi düşük.",steps:"Su musluğunun açık olduğunu ve su kesintisi olmadığını kontrol et. Sorun sürerse yetkili servise başvur.",model:"Kılavuz kapsamındaki modeller",source_url:"https://statik.vestel.com.tr/webfiles/20263190_k.pdf"},
+{brand:"Vestel",appliance_type:"washer",code:"E03",meaning:"Pompa arızası, pompa filtresinde tıkanıklık veya pompa bağlantısı sorunu.",steps:"Kullanım kılavuzundaki filtre temizliği talimatını uygula. Sorun devam ederse yetkili servise başvur.",model:"Kılavuz kapsamındaki modeller",source_url:"https://statik.vestel.com.tr/webfiles/20263190_k.pdf"},
+{brand:"Vestel",appliance_type:"washer",code:"E04",meaning:"Makinede aşırı miktarda su algılanmış olabilir.",steps:"Su girişini kapat. Makineyi güvenli şekilde durdur ve yetkili servisten destek al.",model:"Kılavuz kapsamındaki modeller",source_url:"https://statik.vestel.com.tr/webfiles/20263190_k.pdf"},
+{brand:"Vestel",appliance_type:"refrigerator",code:"E02",meaning:"Sensör hatası uyarısı.",steps:"Cihazın modeline ait kullanım kılavuzunu kontrol et ve teknik destek al.",model:"İlgili Vestel buzdolabı kılavuzu",source_url:"https://statik.vestel.com.tr/webfiles/20265031_k.pdf"},
+{brand:"Vestel",appliance_type:"refrigerator",code:"E03",meaning:"Sensör hatası uyarısı.",steps:"Cihazın modeline ait kullanım kılavuzunu kontrol et ve teknik destek al.",model:"İlgili Vestel buzdolabı kılavuzu",source_url:"https://statik.vestel.com.tr/webfiles/20265031_k.pdf"},
+{brand:"Vestel",appliance_type:"refrigerator",code:"E06",meaning:"Sensör hatası uyarısı.",steps:"Cihazın modeline ait kullanım kılavuzunu kontrol et ve teknik destek al.",model:"İlgili Vestel buzdolabı kılavuzu",source_url:"https://statik.vestel.com.tr/webfiles/20265031_k.pdf"},
+{brand:"Vestel",appliance_type:"refrigerator",code:"E07",meaning:"Sensör hatası uyarısı.",steps:"Cihazın modeline ait kullanım kılavuzunu kontrol et ve teknik destek al.",model:"İlgili Vestel buzdolabı kılavuzu",source_url:"https://statik.vestel.com.tr/webfiles/20265031_k.pdf"},
+{brand:"Vestel",appliance_type:"refrigerator",code:"E08",meaning:"Düşük voltaj uyarısı. Cihaza gelen elektrik gerilimi düşük olabilir.",steps:"Elektrik beslemesini kontrol ettir. Uyarı devam ederse teknik destek al.",model:"İlgili Vestel buzdolabı kılavuzu",source_url:"https://statik.vestel.com.tr/webfiles/20265031_k.pdf"}
+];
+
+let arizalar=[...vestelKayitlari];
+
+function norm(v){
+return String(v??"")
+.toLocaleLowerCase("tr-TR")
+.trim()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.replace(/ı/g,"i")
+.replace(/\s+/g," ");
 }
+
+function safe(v){
+return String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+}
+
+function cevirCihaz(v){
+const k=String(v??"").trim();
+return CIHAZLAR[k]||CIHAZLAR[k.toLowerCase()]||k||"Belirtilmemiş";
+}
+
+function csvOku(metin){
+const rows=[];
+let row=[],cell="",quoted=false;
+
+for(let i=0;i<metin.length;i++){
+const c=metin[i];
+
+if(c==='"'){
+if(quoted&&metin[i+1]==='"'){cell+='"';i++}
+else quoted=!quoted;
+}
+else if(c===","&&!quoted){
+row.push(cell);cell="";
+}
+else if((c==="\n"||c==="\r")&&!quoted){
+if(c==="\r"&&metin[i+1]==="\n")i++;
+row.push(cell);
+if(row.some(x=>x.trim()))rows.push(row);
+row=[];cell="";
+}
+else cell+=c;
+}
+
+row.push(cell);
+if(row.some(x=>x.trim()))rows.push(row);
+if(!rows.length)return [];
+
+const headers=rows.shift().map(x=>x.trim().replace(/^\uFEFF/,""));
+
+return rows.map(r=>{
+const o={};
+headers.forEach((h,i)=>o[h]=(r[i]||"").trim());
+return o;
+});
+}
+
+function get(v,names){
+for(const n of names){
+if(v[n]!==undefined&&String(v[n]).trim())return String(v[n]).trim();
+}
+const wanted=names.map(norm);
+const key=Object.keys(v).find(k=>wanted.includes(norm(k)));
+return key?String(v[key]||"").trim():"";
+}
+
+function marka(v){
+return get(v,["brand","marka","manufacturer"]);
+}
+function cihaz(v){
+return get(v,["appliance_type","appliance","device_type","cihaz"]);
+}
+function kod(v){
+return get(v,["code","error_code","fault_code","kod"]);
+}
+function aciklama(v){
+return get(v,["meaning_tr","description_tr","aciklama","meaning","description","problem","fault","error_description","details"]);
+}
+function cozum(v){
+return get(v,["steps_tr","solution_tr","cozum","steps","solution","repair","fix","recommendation"]);
+}
+function modelBilgisi(v){
+return get(v,["model","model_number","model_no","model_name","models","compatible_models","product_model"]);
+}
+
+function fillSelect(id,values,allText,translator){
+const s=document.getElementById(id);
+const old=s.value;
+s.innerHTML='<option value="">'+allText+'</option>';
+
+[...new Set(values.filter(Boolean))]
+.sort((a,b)=>a.localeCompare(b,"tr"))
+.forEach(v=>{
+const o=document.createElement("option");
+o.value=v;
+o.textContent=translator?translator(v):v;
+s.appendChild(o);
+});
+s.value=old;
+}
+
+function populate(){
+const mevcutMarkalar=arizalar.map(marka);
+const tumMarkalar=[...new Set([...MARKALAR,...mevcutMarkalar])];
+fillSelect("marka",tumMarkalar,"Tüm markalar");
+fillSelect("cihaz",arizalar.map(cihaz),"Tüm cihazlar",cevirCihaz);
+}
+
+async function yukle(){
+const status=document.getElementById("durum");
+populate();
+status.textContent="Vestel kayıtları hazır. Diğer markalar yükleniyor...";
+
+try{
+const res=await fetch(VERI_URL,{cache:"no-store"});
+if(!res.ok)throw Error("Veri kaynağı açılamadı");
+
+const online=csvOku(await res.text());
+arizalar=[...vestelKayitlari,...online];
+
+status.textContent="✅ "+arizalar.length+" arıza kaydı yüklendi.";
+populate();
+}catch(e){
+status.textContent="⚠️ Çevrim içi veri yüklenemedi. Vestel kayıtları kullanılabilir.";
+status.className="error";
+populate();
+}
+}
+
+function ara(){
+const query=norm(document.getElementById("kod").value);
+const brand=norm(document.getElementById("marka").value);
+const device=norm(document.getElementById("cihaz").value);
+const model=norm(document.getElementById("model").value);
+const out=document.getElementById("sonuc");
+
+out.innerHTML="";
+
+if(!query){
+out.innerHTML='<div class="result">Lütfen arıza kodu veya açıklaması yaz.</div>';
+return;
+}
+
+const bulunan=arizalar.filter(v=>{
+const searchable=norm([
+kod(v),aciklama(v),cozum(v),marka(v),cihaz(v)
+].join(" "));
+
+return searchable.includes(query)&&
+(!brand||norm(marka(v))===brand)&&
+(!device||norm(cihaz(v))===device);
+});
+
+if(!bulunan.length){
+out.innerHTML=`
+<div class="result">
+<h3>❌ Arıza bulunamadı</h3>
+<p>Bu arama için kayıt bulunamadı.</p>
+<p class="small">Arıza kodunu farklı yazmayı deneyebilirsin. Seçtiğin marka veya cihazda henüz kayıt olmayabilir.</p>
+</div>`;
+return;
+}
+
+let gosterilen=bulunan;
+let modelEslesmesi=false;
+
+if(model){
+const eslesen=bulunan.filter(v=>{
+const m=norm(modelBilgisi(v));
+return m&&m.includes(model);
+});
+if(eslesen.length){
+gosterilen=eslesen;
+modelEslesmesi=true;
+}
+}
+
+out.innerHTML="<h3>Bulunan kayıt: "+gosterilen.length+"</h3>";
+
+if(model&&!modelEslesmesi){
+out.innerHTML+='<p class="small">Model numarasıyla birebir eşleşme bulunamadı. Aşağıdaki sonuçlar modeline özel doğrulanmış değildir.</p>';
+}
+
+gosterilen.forEach(v=>{
+const brandName=marka(v)||"Belirtilmemiş";
+const deviceName=cevirCihaz(cihaz(v));
+const codeName=kod(v)||"Belirtilmemiş";
+const description=aciklama(v);
+const solution=cozum(v);
+const modelData=modelBilgisi(v);
+const source=get(v,["source_url","url","source"]);
+
+let html=`
+<div class="result">
+<span class="badge">Arıza kaydı</span>
+<h3>${safe(brandName)} — ${safe(codeName)}</h3>
+<p><b>Cihaz:</b> ${safe(deviceName)}</p>`;
+
+if(modelData)html+=`<p><b>Model bilgisi:</b> ${safe(modelData)}</p>`;
+if(description)html+=`<p><b>Arıza açıklaması:</b> ${safe(description)}</p>`;
+if(solution)html+=`<p><b>Kontrol / çözüm:</b> ${safe(solution)}</p>`;
+
+if(source&&/^https?:\/\//i.test(source)){
+html+=`<p><a href="${safe(source)}" target="_blank" rel="noopener">Kaynak kılavuzu aç</a></p>`;
+}
+
+html+=`
+<p class="small">Not: Aynı arıza kodu farklı modellerde farklı anlamlara gelebilir. Elektrik ve elektronik müdahalelerini yetkili servise bırak.</p>
+</div>`;
+
+out.innerHTML+=html;
+});
+}
+
+function temizle(){
+document.getElementById("cihaz").value="";
+document.getElementById("marka").value="";
+document.getElementById("model").value="";
+document.getElementById("kod").value="";
+document.getElementById("sonuc").innerHTML="";
+}
+
+document.getElementById("araBtn").addEventListener("click",ara);
+document.getElementById("temizleBtn").addEventListener("click",temizle);
+
+document.getElementById("kod").addEventListener("keydown",e=>{
+if(e.key==="Enter")ara();
+});
+
+yukle();
 </script>
 </body>
 </html>
